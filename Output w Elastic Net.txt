@@ -1,0 +1,210 @@
+Active execution device: cpu
+Train subset size: 5000 | Test subset size: 1000
+
+=== Part 1: Baseline Classifier (x -> y) ===
+--- Training Model ---
+Epoch [1/5] - Loss: 0.4296
+Epoch [2/5] - Loss: 0.2156
+Epoch [3/5] - Loss: 0.1675
+Epoch [4/5] - Loss: 0.1293
+Epoch [5/5] - Loss: 0.1084
+
+--- Metric Report ---
+[Evaluation] Acc: 0.8500 | AUROC: 0.9579 | F1: 0.8299 | RMSE: 0.3505
+=*60
+
+=== Part 2: Concept Predictor (x -> c) ==
+--- Training Model ---
+Epoch [1/5] - Loss: 0.4627
+Epoch [2/5] - Loss: 0.3789
+Epoch [3/5] - Loss: 0.3512
+Epoch [4/5] - Loss: 0.3200
+Epoch [5/5] - Loss: 0.2919
+
+--- Per-Concept Performance ---
+Mouth_Slightly_Open    | Acc: 88.00% | F1: 0.8721
+High_Cheekbones        | Acc: 77.70% | F1: 0.7257
+Chubby                 | Acc: 93.30% | F1: 0.2947
+Narrow_Eyes            | Acc: 85.80% | F1: 0.2198
+Bags_Under_Eyes        | Acc: 80.20% | F1: 0.4036
+Big_Lips               | Acc: 66.70% | F1: 0.1167
+Big_Nose               | Acc: 81.00% | F1: 0.3581
+Pointy_Nose            | Acc: 73.20% | F1: 0.1410
+Bushy_Eyebrows         | Acc: 89.90% | F1: 0.4767
+Arched_Eyebrows        | Acc: 75.60% | F1: 0.3333
+
+--- Metric Report ---
+Mean Concept Accuracy (Macro): 81.14%
+Mean Concept F1 Score (Macro): 0.3942
+============================================================
+=== Part 3: Independent CBM (c -> y Head) ===
+--- Model Training ---
+Epoch [1/5] - CBM Loss: 0.7198
+Epoch [2/5] - CBM Loss: 0.6945
+Epoch [3/5] - CBM Loss: 0.6757
+Epoch [4/5] - CBM Loss: 0.6601
+Epoch [5/5] - CBM Loss: 0.6455
+--- Independent CBM Metrics ---
+  • Accuracy:        0.7630
+  • AUROC:           0.8370
+  • F1 Score:        0.7779
+  • RMSE:            0.4681
+  • Avg Pearson (r): 0.5617
+  • Sparsity:        55.5% active concepts
+============================================================
+--- Baseline Metrics ---
+[Evaluation] Acc: 0.8500 | AUROC: 0.9579 | F1: 0.8299 | RMSE: 0.3505
+============================================================
+[HybridCBM] Successfully hooked into backbone layer: 'backbone.backbone.8'
+=== Part 4: Hybrid CBM (Concept Head + Side Channel) ===
+
+--- Training Model ---
+Epoch [1/5] - Hybrid CBM Loss: 0.3915
+Epoch [2/5] - Hybrid CBM Loss: 0.3336
+Epoch [3/5] - Hybrid CBM Loss: 0.3294
+Epoch [4/5] - Hybrid CBM Loss: 0.3261
+Epoch [5/5] - Hybrid CBM Loss: 0.3225
+--- Hybrid CBM w/ Side Channel Metrics ---
+PART 4 (HYBRID CBM) CONCEPT EVALUATION METRICS:
+  • Accuracy:        0.8730
+  • AUROC:           0.9492
+  • F1 Score:        0.8782
+  • RMSE:            0.3031
+  • Avg Pearson (r): 0.8004
+  • Sparsity:        53.1% active concepts
+--- Independent CBM Metrics ---
+  • Accuracy:        0.7630
+  • AUROC:           0.8370
+  • F1 Score:        0.7779
+  • RMSE:            0.4681
+  • Avg Pearson (r): 0.5617
+  • Sparsity:        55.5% active concepts
+--- Baseline Metrics ---
+[Evaluation] Acc: 0.8500 | AUROC: 0.9579 | F1: 0.8299 | RMSE: 0.3505
+============================================================
+--- Part 4 Continued: Hybrid CBM with Side-Channel Dropout ---
+Training Hybrid CBM with Side-Channel Dropout: p = 0.0
+Epoch [1/5] - Loss: 0.3534
+Epoch [2/5] - Loss: 0.3169
+Epoch [3/5] - Loss: 0.3099
+Epoch [4/5] - Loss: 0.3145
+Epoch [5/5] - Loss: 0.3041
+Dropout Rate = 0.0
+  • Accuracy:        0.8860
+  • AUROC:           0.9581
+  • F1 Score:        0.8848
+  • RMSE:            0.2846
+  • Avg Pearson (r): 0.8239
+  • Sparsity:        47.8% active concepts
+
+
+Training Hybrid CBM with Side-Channel Dropout: p = 0.1
+Epoch [1/5] - Loss: 0.3937
+Epoch [2/5] - Loss: 0.3266
+Epoch [3/5] - Loss: 0.3125
+Epoch [4/5] - Loss: 0.3171
+Epoch [5/5] - Loss: 0.3124
+Dropout Rate = 0.1
+  • Accuracy:        0.8860
+  • AUROC:           0.9582
+  • F1 Score:        0.8832
+  • RMSE:            0.2861
+  • Avg Pearson (r): 0.8235
+  • Sparsity:        46.4% active concepts
+
+
+Training Hybrid CBM with Side-Channel Dropout: p = 0.3
+Epoch [1/5] - Loss: 0.3851
+Epoch [2/5] - Loss: 0.3374
+Epoch [3/5] - Loss: 0.3236
+Epoch [4/5] - Loss: 0.3238
+Epoch [5/5] - Loss: 0.3212
+Dropout Rate = 0.3
+  • Accuracy:        0.8950
+  • AUROC:           0.9585
+  • F1 Score:        0.8968
+  • RMSE:            0.2813
+  • Avg Pearson (r): 0.8275
+  • Sparsity:        50.5% active concepts
+
+
+Training Hybrid CBM with Side-Channel Dropout: p = 0.5
+Epoch [1/5] - Loss: 0.3895
+Epoch [2/5] - Loss: 0.3550
+Epoch [3/5] - Loss: 0.3329
+Epoch [4/5] - Loss: 0.3355
+Epoch [5/5] - Loss: 0.3324
+Dropout Rate = 0.5
+  • Accuracy:        0.8930
+  • AUROC:           0.9588
+  • F1 Score:        0.8933
+  • RMSE:            0.2808
+  • Avg Pearson (r): 0.8286
+  • Sparsity:        49.1% active concepts
+
+
+Training Hybrid CBM with Side-Channel Dropout: p = 0.7
+Epoch [1/5] - Loss: 0.4319
+Epoch [2/5] - Loss: 0.3606
+Epoch [3/5] - Loss: 0.3576
+Epoch [4/5] - Loss: 0.3531
+Epoch [5/5] - Loss: 0.3416
+Dropout Rate = 0.7
+  • Accuracy:        0.8960
+  • AUROC:           0.9575
+  • F1 Score:        0.8988
+  • RMSE:            0.2856
+  • Avg Pearson (r): 0.8236
+  • Sparsity:        51.6% active concepts
+
+
+Training Hybrid CBM with Side-Channel Dropout: p = 0.9
+Epoch [1/5] - Loss: 0.6814
+Epoch [2/5] - Loss: 0.4520
+Epoch [3/5] - Loss: 0.4278
+Epoch [4/5] - Loss: 0.3900
+Epoch [5/5] - Loss: 0.3907
+Dropout Rate = 0.9
+  • Accuracy:        0.8910
+  • AUROC:           0.9545
+  • F1 Score:        0.8893
+  • RMSE:            0.2921
+  • Avg Pearson (r): 0.8161
+  • Sparsity:        47.3% active concepts
+
+
+============================================================
+--- Comparing Steerability Across Models ---
+
+Evaluating Interventions for: Independent CBM
+--> Done [Independent CBM] | Mean Prob Change: 0.0476 | Flip Rate: 21.2%
+
+Evaluating Interventions for: Hybrid CBM (Standard)
+--> Done [Hybrid CBM (Standard)] | Mean Prob Change: 0.0068 | Flip Rate: 0.7%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.0)
+--> Done [Hybrid + Dropout (p=0.0)] | Mean Prob Change: 0.0113 | Flip Rate: 1.2%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.1)
+--> Done [Hybrid + Dropout (p=0.1)] | Mean Prob Change: 0.0094 | Flip Rate: 0.9%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.3)
+--> Done [Hybrid + Dropout (p=0.3)] | Mean Prob Change: 0.0065 | Flip Rate: 0.6%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.5)
+--> Done [Hybrid + Dropout (p=0.5)] | Mean Prob Change: 0.0125 | Flip Rate: 1.2%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.7)
+--> Done [Hybrid + Dropout (p=0.7)] | Mean Prob Change: 0.0131 | Flip Rate: 1.1%
+
+Evaluating Interventions for: Hybrid + Dropout (p=0.9)
+--> Done [Hybrid + Dropout (p=0.9)] | Mean Prob Change: 0.0112 | Flip Rate: 1.2%
+                         Mean Prob Change (Steerability) Mean Flip Rate (%) Top Concept Top Effect
+Independent CBM                                 0.047553          21.232422   Concept_4    0.09541
+Hybrid CBM (Standard)                           0.006814           0.738281   Concept_9   0.017992
+Hybrid + Dropout (p=0.0)                        0.011283           1.189453   Concept_8   0.023027
+Hybrid + Dropout (p=0.1)                        0.009428           0.908203   Concept_1    0.01889
+Hybrid + Dropout (p=0.3)                         0.00649           0.623047   Concept_2   0.022993
+Hybrid + Dropout (p=0.5)                         0.01246           1.224609   Concept_0   0.023911
+Hybrid + Dropout (p=0.7)                        0.013141           1.121094   Concept_0   0.018502
+Hybrid + Dropout (p=0.9)                        0.011242           1.193359   Concept_2   0.017434
