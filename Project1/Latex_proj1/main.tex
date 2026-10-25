@@ -1,0 +1,292 @@
+\documentclass[11pt,a4paper,twocolumn]{article}
+
+% --------------------------------------------------
+% Packages
+% --------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{siunitx}
+
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{url}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{float}
+
+% --------------------------------------------------
+% Bibliography
+% --------------------------------------------------
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+% --------------------------------------------------
+% Hyperref configuration
+% --------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Deep Learning Project 1},
+    pdfauthor={Author Name}
+}
+
+% --------------------------------------------------
+% Title
+% --------------------------------------------------
+\title{
+    \vspace{-1cm}
+    \textbf{Deep Learning Project 1}\\
+    \large Experimental Study and Analysis
+}
+
+\author{
+    Ian Haggerty\\
+    Carlos III University, Leganés (Madrid)\\
+    \texttt{100592859@alumnos.uc3m.es}
+    \and
+    Denilson Hernández\\
+    Carlos III University, Leganés (Madrid)\\
+    \texttt{100548074@alumnos.uc3m.es}
+    \and
+    Ignacio Sanz-Portillo\\
+    Carlos III University, Leganés (Madrid)\\
+    \texttt{100488529@alumnos.uc3m.es}
+    \and
+    Irene Aguado-Caballero\\
+    Carlos III University, Leganés (Madrid)\\
+    \texttt{100604981@alumnos.uc3m.es}
+}
+
+\date{September 2026}
+
+% --------------------------------------------------
+% Document
+% --------------------------------------------------
+\begin{document}
+
+\maketitle
+
+% --------------------------------------------------
+% Abstract
+% --------------------------------------------------
+\begin{abstract}
+
+This paper aims to compare the hyperparameters and metrics of an step by step 
+CBM architecture, evaluating each part of its data flow. 
+
+
+\end{abstract}
+
+\vspace{0.3cm}
+
+\noindent
+\textbf{Keywords:}
+deep learning, neural networks, machine learning, renet18
+
+% --------------------------------------------------
+% Introduction
+% --------------------------------------------------
+
+
+\section{Introduction}
+
+Concept Bottleneck Networks (CBM) are very interesting types of models 
+used to provide proof of in which descriptors the model is focusing in order to make its final decision on the label. In CBMs, the model maps the images
+into the prediction of a concept matrix that represents the metadata that 
+we are using for our task. Once the model has predicted the metadata, it predicts the labels, based on the metadata predictions.
+
+The main objectives of this work are:
+\begin{itemize}
+    \item To create a basic, using resnet18 as a backbone, model that predicts the labels.
+    \item To design and implement a deep learning CBM
+    architecture.
+    \item To implement a hybrid CBM with an additional side channel using different levels of dropout.
+    \item To evaluate and compare the trade-off of the different architectures and identify possible limitations.
+\end{itemize}
+
+Our code is available on GitHub.\footnote{\url{https://github.com/denilsonhz/DeepLearning_Projects}}
+
+%The remainder of this paper is organized as follows.
+%Section~\ref{sec:related} discusses related work.
+%Section~\ref{sec:methodology} presents the proposed methodology.
+%Section~\ref{sec:results} describes the experimental results.
+%Finally, Section~\ref{sec:conclusions} summarizes the main conclusions and discusses possible future improvements.
+
+
+
+% --------------------------------------------------
+% Related Work
+% --------------------------------------------------
+%\section{Related Work}
+%\label{sec:related}
+
+%This section presents 
+
+%This section presents previous approaches related to the problem
+%addressed in this project. Relevant deep learning architectures,
+%training strategies, and evaluation techniques are discussed.
+
+%For example, previous studies have demonstrated the effectiveness
+%of deep neural networks in similar tasks~\cite{example_reference}.
+
+% --------------------------------------------------
+% Methodology
+% --------------------------------------------------
+\section{Experimental setup}
+\label{sec:methodology}
+
+\subsection{Dataset}
+
+The dataset used for this project is the CelebA dataset (Liu et al., 2015)\cite{Liu_2015_ICCV}. This dataset contains 10.177 celebrities, each of them represented with 20 images. Each sample has been also labeled according to some concepts. The concepts defined as attributes were: Mouth Slightly Open, High Cheekbones, Chubby, Narrow Eyes, Bags Under Eyes, Big Lips, Big Nose, Pointy Nose, Bushy Eyebrows, Arched Eyebrows. The final label we will try to predict is "Smiling".
+
+Before training the model, the images were preprocessed using the following steps for each one of the experiments:
+
+\begin{enumerate}
+    \item Center crop of 178 x 178 pixels.
+    \item Resize the image to 64 x 64.
+    \item Training and test split division.
+\end{enumerate}
+
+\subsection{Model Architecture}
+
+The models we have selected to solve this problem are different step by step implementations that lead up to a final CBM model that includes a side channel that helps predict the final output.
+
+\subsubsection{Baseline Classifier}
+
+The proposed neural network architecture for the backbone is a Resnet18 (He et al., 2016)\cite{he2015deepresiduallearningimage}. 
+
+ResNet-18 is an 18-layer residual network composed of a convolutional stem, four stages of two residual blocks each (with 64, 128, 256 and 512 channels), and a global average pooling layer that yields a 512-dimensional feature vector. We initialized the network with ImageNet-pretrained weights from torchvision and removed its final fully connected layer, so that the 512-dimensional embedding serves as input to the task-specific heads.
+
+%Each residual block learns a residual function F(x) that is added to its input through a skip connection, y = F(x) + x, which eases the optimization of deep networks and mitigates the degradation problem observed in plain architectures. 
+
+% We initialized the network with ImageNet-pretrained weights from torchvision and removed its final fully connected layer, so that the 512-dimensional embedding serves as input to the task-specific heads. With approximately 11 million parameters, ResNet-18 offers a favorable trade-off between representational capacity and computational cost, making it well suited to the repeated training runs required by our experiments.
+
+In our case, the basic Resnet18 model is the fastest approach. It predicts whether the subject is smiling or not. Its main downside is that it is a complete black box. We do not have access to how the model makes the predictions, we just know the final results it reaches.
+
+\subsubsection{Concept Predictor}
+
+The concept predictor model is the second step we took to build our final model. In this case, we implemented a model that takes the original images and tries to predict some predefined concepts, so as to explain the features of each image. Knowing this concepts is useful to base the final output label (smiling) in some features.
+
+The main issue of this approach is that it is very susceptible to class imbalance if we have very few examples of a certain concept represented in the dataset.
+
+\subsubsection{Bottleneck Model}
+
+For this approach we fuse the two previous ones. We use the concept predictor first to have that explainability layer added to our model, and then, with the predicted features, we add a baseline classifier. This time, the baseline classifier takes the predicted concepts and predicts the final label (smiling or not) based on these features. It does not use the images for this last part.
+
+Its main drawback is that the resulting metrics are usually much worse than the original baseline model. This is because we are no longer using all the features that the image provides us with.
+
+
+\subsubsection{Hybrid CBM}
+
+The hybrid CBM is our final model. This version adds a side channel that keeps part of the features extracted by the original backbone model from the image in the final prediction. We are going to regulate how much influence this features have in the output choosing different dropout layers, so that the model relies more on the main channel, that includes the explainable concepts, than the side one. 
+
+
+\subsection{Training Procedure}
+
+The model was trained using the Adam optimizer with a learning
+rate of $\eta$. For the loss, we used a Binary Cross-Entropy plus an elastic net for the regularization penalty.
+
+The main hyperparameters are summarized in
+Table~\ref{tab:hyperparameters}.
+
+\begin{table}[H]
+    \centering
+    \caption{Training hyperparameters.}
+    \label{tab:hyperparameters}
+    \begin{tabular}{lc}
+        \toprule
+        Parameter & Value \\
+        \midrule
+        Learning rate & $1e-3$ \\
+        Batch size & 64 \\
+        Number of epochs & 5 \\
+        Optimizer & Adam \\
+        Penalization of the final layer & $1e-4$ \\
+        Elastic Net (lambda) & 0.99, $1e-4$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+On the last experiment (using a side channel for the final prediction), different dropout values were implemented to compare their performance. The dropout values used were 0.0, 0.1, 0.3, 0.5, 0.7 and 0.9.
+
+We also included an early stopping function. We set its patience to 2, so that when the model has not improved in two consecutive epochs, it stops training. 
+
+
+% --------------------------------------------------
+% Results
+% --------------------------------------------------
+\section{Quantitative results}
+\label{sec:results}
+
+This section presents the experimental results obtained during
+the evaluation of the proposed approaches.
+
+The metrics we have selected to measure our results are accuracy, AUROC, F1 Score, RMSE, average Pearson correlation and spacity\cite{sparcity}. 
+
+For the final experiment, where we use a side channel, we have also compared the results of the mean flip rate, the mean probability of change, the top concept and the top effect.
+
+The main performance metrics are presented in
+Table~\ref{tab:results}.
+
+\begin{table}[H]
+    \centering
+    \caption{Performance of the proposed model.}
+    \label{tab:results}
+    \begin{tabular}{lcccccc}
+        \toprule
+        Model phase & Accuracy & AUROC & F1-score & RMSE & Average Pearson & Sparcity \\
+        \midrule
+        Baseline & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX  \\
+        Concept predictor & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX\\
+        Bottlenec Model & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX\\
+        Hybrid CBM & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX & 0.XX\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This results leads us to several conclusions:
+
+ADD CONCLUSIONS
+
+
+% --------------------------------------------------
+% Conclusions
+% --------------------------------------------------
+\section{Discussion and findings}
+\label{sec:conclusions}
+
+This paper presented the methodology and experimental evaluation
+of a deep learning approach for the selected task.
+
+The results show that the proposed model is capable of learning
+meaningful representations from the input data and achieving
+promising performance.
+
+Several directions can be explored in future work. These include
+the use of larger datasets, more sophisticated architectures,
+additional data augmentation techniques, and more extensive
+hyperparameter optimization.
+
+% --------------------------------------------------
+% References
+% --------------------------------------------------
+\printbibliography
+
+\end{document}
